@@ -8,16 +8,24 @@ enum OPCODES {
 //% color=190 weight=100 icon="\uf1ec"
 //% advanced=true
 namespace fram {
-    //% block
+    //% blockId=fram_begin block="fram|begin"
     export function begin() {
         pins.digitalWritePin(DigitalPin.P16, 1)
         pins.spiPins(DigitalPin.P15, DigitalPin.P14, DigitalPin.P13)
         pins.spiFormat(8, 0)
         pins.spiFrequency(1000000)
         fram.getDeviceID()
-        fram.write_enable()
+        fram.writeEnable()
     }
-    //% block
+    
+    /**
+     * Write one byte to the address.
+     * @param addr to send over serial
+     * @param val to send over serial
+     */
+    //% weight=90
+    //% help=fram/write8 blockGap=8
+    //% blockId=fram_write8 block="fram|write8 %addr %val"
     export function write8(addr: number, val: number) {
         pins.digitalWritePin(DigitalPin.P16, 0)
         pins.spiWrite(OPCODES.OPCODE_WRITE)
@@ -26,7 +34,7 @@ namespace fram {
         pins.spiWrite(val)
         pins.digitalWritePin(DigitalPin.P16, 1)
     }
-    //% block
+    //% blockId=fram_getdeviceid block="fram|get device ID"
     export function getDeviceID () {
         let whoami = 0
         let wh0 = 0
@@ -47,14 +55,14 @@ namespace fram {
             serial.writeLine("ERR: FRAM not Connected")
         }
     }
-    //% block
-    export function write_enable() {
+    //% blockId=fram_writeenable block="fram|write enable"
+    export function writeEnable() {
         pins.digitalWritePin(DigitalPin.P16, 0)
         let wh3 = pins.spiWrite(OPCODES.OPCODE_WREN)
         pins.digitalWritePin(DigitalPin.P16, 1)
         serial.writeLine("FRAM Writes Enabled")
     }
-    //% block
+    //% blockId=fram_read8 block="fram|read8 %addr"
     export function read8 (addr: number) {
         pins.digitalWritePin(DigitalPin.P16, 0)
         pins.spiWrite(OPCODES.OPCODE_READ)
